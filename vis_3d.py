@@ -11,6 +11,7 @@ import numpy as np
 import vispy.scene
 from vispy.scene import visuals
 import vispy.app as app
+from vispy.visuals import transforms
 
 import pickle 
 
@@ -19,16 +20,25 @@ import pickle
 #
 with open("./episode_1.pkl", "rb") as f:
     data = pickle.load(f)
-canvas = vispy.scene.SceneCanvas(keys='interactive', show=True)
+canvas = vispy.scene.SceneCanvas(keys='interactive', show=True, bgcolor='white')
 view = canvas.central_widget.add_view()
 
 
 idx = 0
+data["flex_states"][:,:,:,[0,1,2]] = data["flex_states"][:,:,:,[0,2,1]]
 pos = data["flex_states"][0, idx, :, :3]
 scatter = visuals.Markers()
 scatter.set_data(pos, edge_color=None, face_color=(1, 1, 1, .5), size=5)
+floor = visuals.Plane(width=5, height=5)
+wall = visuals.Plane(width=5, height=1, direction='+x', width_segments=4,height_segments=10)
+wall._mesh.color='green'
+import pdb
+pdb.set_trace()
 
+view.add(wall)
+wall.transform = transforms.STTransform(translate=(-2.5, 0., 0.5))
 view.add(scatter)
+view.add(floor)
 
 view.camera = 'turntable'  # or try 'arcball'
 
@@ -51,7 +61,7 @@ def update(event):
 
 timer = app.Timer(interval="1.1")
 timer.connect(update)
-timer.start(0)
+timer.start(0.04)
 
 if __name__ == '__main__':
     import sys
