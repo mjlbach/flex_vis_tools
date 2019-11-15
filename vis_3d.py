@@ -17,9 +17,7 @@ import pickle
 #
 # Make a canvas and add simple view
 #
-import pdb
-pdb.set_trace()
-with open("/home/mjlbach/episode_1.pkl", "rb") as f:
+with open("./episode_1.pkl", "rb") as f:
     data = pickle.load(f)
 canvas = vispy.scene.SceneCanvas(keys='interactive', show=True)
 view = canvas.central_widget.add_view()
